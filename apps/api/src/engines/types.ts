@@ -22,12 +22,13 @@ export type DeliveryRule = {
 };
 
 export type Promotion = {
-  code?: string;
-  ref?: string;
-  famille?: string;
-  taux_pct: number;
-  debut: string;
-  fin: string;
+  ref: string;
+  modele: string;
+  prix_normal_mad: number;
+  prix_promo_mad: number;
+  debut: string; // YYYY-MM-DD
+  fin: string;   // YYYY-MM-DD
+  condition: string;
 };
 
 /** Toute décision déterministe renvoie ceci : jamais une exception muette. */
