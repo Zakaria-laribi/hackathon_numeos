@@ -5,9 +5,7 @@ import type { KenzaStateType } from "../state.js";
  * jamais de texte final dans reply — ça, c'est le rôle d'explainer,
  * après validation par guard.
  */
-export async function catalogNode(state: KenzaStateType): Promise<Partial<KenzaStateType>> {
-  return { toolResult: { agent: "catalog", intention: state.intent?.intention, note: "stub — vrai outil pas encore branché" } };
-}
+
 
 export async function cartNode(state: KenzaStateType): Promise<Partial<KenzaStateType>> {
   return { toolResult: { agent: "cart", intention: state.intent?.intention, note: "stub — vrai outil pas encore branché" } };

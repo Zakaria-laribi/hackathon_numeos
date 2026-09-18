@@ -3,8 +3,8 @@ import { KenzaState } from "./state.js";
 import { ingestNode } from "./nodes/ingest.js";
 import { extractNode } from "./nodes/extract.js";
 import { routeDecision } from "./nodes/route.js";
+import { catalogNode } from "./nodes/catalog.js";
 import {
-  catalogNode,
   cartNode,
   discountNode,
   policyNode,
