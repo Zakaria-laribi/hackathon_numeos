@@ -1,3 +1,12 @@
+CREATE EXTENSION IF NOT EXISTS vector;
+
+CREATE TABLE IF NOT EXISTS rag_chunks (
+  id SERIAL PRIMARY KEY,
+  source TEXT NOT NULL,
+  content TEXT NOT NULL,
+  embedding vector(512)
+);
+
 CREATE TABLE IF NOT EXISTS products (
   ref TEXT PRIMARY KEY,
   modele TEXT NOT NULL,
