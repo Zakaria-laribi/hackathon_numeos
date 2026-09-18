@@ -10,12 +10,14 @@ import {
   policyNode,
   escalateNode,
 } from "./nodes/stubs.js";
+import { guardNode } from "./nodes/guard.js";
+import { explainerNode } from "./nodes/explainer.js";
+import { persistNode } from "./nodes/persist.js";
 
 /**
- * Graphe : START → ingest → extract → ROUTE (conditionnel) →
- * [catalog|cart|discount|policy|escalate] → END.
- * guard / explainer / persist seront ajoutés ensuite, entre le routage
- * et END, sans toucher à ce qui existe.
+ * Graphe complet (squelette) :
+ * START → ingest → extract → ROUTE → [5 branches] → guard → explainer → persist → END
+ * memory_load sera inséré entre ingest et extract à l'Étape G.
  */
 export const graph = new StateGraph(KenzaState)
   .addNode("ingest", ingestNode)
@@ -25,6 +27,9 @@ export const graph = new StateGraph(KenzaState)
   .addNode("discount", discountNode)
   .addNode("policy", policyNode)
   .addNode("escalate", escalateNode)
+  .addNode("guard", guardNode)
+  .addNode("explainer", explainerNode)
+  .addNode("persist", persistNode)
   .addEdge(START, "ingest")
   .addEdge("ingest", "extract")
   .addConditionalEdges("extract", routeDecision, {
@@ -34,10 +39,13 @@ export const graph = new StateGraph(KenzaState)
     policy: "policy",
     escalate: "escalate",
   })
-  .addEdge("catalog", END)
-  .addEdge("cart_agent", END)
-  .addEdge("discount", END)
-  .addEdge("policy", END)
-  .addEdge("escalate", END);
+  .addEdge("catalog", "guard")
+  .addEdge("cart_agent", "guard")
+  .addEdge("discount", "guard")
+  .addEdge("policy", "guard")
+  .addEdge("escalate", "guard")
+  .addEdge("guard", "explainer")
+  .addEdge("explainer", "persist")
+  .addEdge("persist", END);
 
 export const kenzaGraph = graph.compile();

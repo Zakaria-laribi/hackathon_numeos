@@ -1,29 +1,28 @@
 import type { KenzaStateType } from "../state.js";
 
 /**
- * Stubs temporaires. Chaque agent spécialisé sera remplacé par sa vraie
- * implémentation (outils réels, RAG, escalade avec contexte) aux étapes
- * suivantes. Pour l'instant, ils prouvent juste que le routage fonctionne.
+ * Stubs temporaires. Chaque agent écrit un résultat BRUT dans toolResult,
+ * jamais de texte final dans reply — ça, c'est le rôle d'explainer,
+ * après validation par guard.
  */
 export async function catalogNode(state: KenzaStateType): Promise<Partial<KenzaStateType>> {
-  return { reply: `[catalog] intention=${state.intent?.intention}` };
+  return { toolResult: { agent: "catalog", intention: state.intent?.intention, note: "stub — vrai outil pas encore branché" } };
 }
 
 export async function cartNode(state: KenzaStateType): Promise<Partial<KenzaStateType>> {
-  return { reply: `[cart] intention=${state.intent?.intention}` };
+  return { toolResult: { agent: "cart", intention: state.intent?.intention, note: "stub — vrai outil pas encore branché" } };
 }
 
 export async function discountNode(state: KenzaStateType): Promise<Partial<KenzaStateType>> {
-  return { reply: `[discount] intention=${state.intent?.intention}` };
+  return { toolResult: { agent: "discount", intention: state.intent?.intention, note: "stub — vrai outil pas encore branché" } };
 }
 
 export async function policyNode(state: KenzaStateType): Promise<Partial<KenzaStateType>> {
-  return { reply: `[policy] intention=${state.intent?.intention}` };
+  return { toolResult: { agent: "policy", intention: state.intent?.intention, note: "stub — RAG pas encore branché" } };
 }
 
 export async function escalateNode(state: KenzaStateType): Promise<Partial<KenzaStateType>> {
   return {
-    reply: `[escalate] intention=${state.intent?.intention}`,
-    escalation: { reason: "hors_domaine ou cas non couvert" },
+    escalation: { reason: `hors_domaine ou cas non couvert (intention=${state.intent?.intention})` },
   };
 }
