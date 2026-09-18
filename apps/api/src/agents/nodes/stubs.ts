@@ -11,9 +11,6 @@ export async function cartNode(state: KenzaStateType): Promise<Partial<KenzaStat
   return { toolResult: { agent: "cart", intention: state.intent?.intention, note: "stub — vrai outil pas encore branché" } };
 }
 
-export async function discountNode(state: KenzaStateType): Promise<Partial<KenzaStateType>> {
-  return { toolResult: { agent: "discount", intention: state.intent?.intention, note: "stub — vrai outil pas encore branché" } };
-}
 
 export async function policyNode(state: KenzaStateType): Promise<Partial<KenzaStateType>> {
   return { toolResult: { agent: "policy", intention: state.intent?.intention, note: "stub — RAG pas encore branché" } };

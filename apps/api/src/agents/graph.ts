@@ -4,12 +4,8 @@ import { ingestNode } from "./nodes/ingest.js";
 import { extractNode } from "./nodes/extract.js";
 import { routeDecision } from "./nodes/route.js";
 import { catalogNode } from "./nodes/catalog.js";
-import {
-  cartNode,
-  discountNode,
-  policyNode,
-  escalateNode,
-} from "./nodes/stubs.js";
+import { discountNode } from "./nodes/discount.js";
+import { cartNode, policyNode, escalateNode } from "./nodes/stubs.js";
 import { guardNode } from "./nodes/guard.js";
 import { explainerNode } from "./nodes/explainer.js";
 import { persistNode } from "./nodes/persist.js";
