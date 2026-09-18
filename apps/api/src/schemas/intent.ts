@@ -5,6 +5,7 @@ import { z } from "zod";
  * Toute réponse hors de cette forme est une erreur de validation,
  * jamais une supposition côté agent.
  */
+
 export const IntentSchema = z.object({
   intention: z.enum([
     "recherche_produit",
@@ -15,8 +16,10 @@ export const IntentSchema = z.object({
     "demande_remise",
     "creer_commande",
     "consulter_historique",
+    "question_politique",   // ← nouveau : retour, garantie, conditions générales, etc.
     "hors_domaine",
   ]),
+  // ... reste inchangé
   entites: z.object({
     ref: z.string().nullable().default(null),
     modele: z.string().nullable().default(null),

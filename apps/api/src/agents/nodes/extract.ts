@@ -24,7 +24,13 @@ Tâche : à partir du message normalisé du client, extraire :
 Règles strictes :
 - N'extrait que ce qui est écrit ou clairement implicite dans le message.
 - Si le client mentionne un prix ou une remise en pourcentage, mets-le dans les entités, ne le calcule jamais.
-- Si l'intention ne correspond à aucun des cas prévus (facture, réclamation, question hors catalogue), utilise "hors_domaine".
+- Utilise "question_politique" pour toute question générale sur les conditions
+  de vente : retour, garantie, délai de remboursement, moyens de paiement,
+  politique de la boutique en général (pas une question de prix ou de stock
+  sur un produit précis).
+- Si l'intention ne correspond à aucun des cas prévus (facture au nom d'une
+  société, réclamation, litige, question totalement hors sujet), utilise
+  "hors_domaine".
 - Une quantité non mentionnée reste null, ne suppose jamais 1 par défaut.`;
 
 export async function extractNode(
