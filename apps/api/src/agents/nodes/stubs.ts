@@ -10,12 +10,6 @@ import type { KenzaStateType } from "../state.js";
 export async function cartNode(state: KenzaStateType): Promise<Partial<KenzaStateType>> {
   return { toolResult: { agent: "cart", intention: state.intent?.intention, note: "stub — vrai outil pas encore branché" } };
 }
-
-
-export async function policyNode(state: KenzaStateType): Promise<Partial<KenzaStateType>> {
-  return { toolResult: { agent: "policy", intention: state.intent?.intention, note: "stub — RAG pas encore branché" } };
-}
-
 export async function escalateNode(state: KenzaStateType): Promise<Partial<KenzaStateType>> {
   return {
     escalation: { reason: `hors_domaine ou cas non couvert (intention=${state.intent?.intention})` },
