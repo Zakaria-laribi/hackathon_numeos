@@ -11,6 +11,7 @@ import { memoryLoadNode } from "./nodes/memoryLoad.js";
 import { escalateNode } from "./nodes/stubs.js";import { guardNode } from "./nodes/guard.js";
 import { explainerNode } from "./nodes/explainer.js";
 import { persistNode } from "./nodes/persist.js";
+import { checkpointer } from "./checkpointer.js";
 
 /**
  * Graphe complet (squelette) :
@@ -48,4 +49,4 @@ export const graph = new StateGraph(KenzaState)
   .addEdge("explainer", "persist")
   .addEdge("persist", END);
 
-export const kenzaGraph = graph.compile();
+export const kenzaGraph = graph.compile({ checkpointer });

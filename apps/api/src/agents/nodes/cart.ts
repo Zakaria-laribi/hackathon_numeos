@@ -1,4 +1,5 @@
 import { searchProduct, checkStock } from "../../tools/index.js";
+import { pool } from "../../db/pool.js";
 import type { KenzaStateType } from "../state.js";
 import type { CartUpdate } from "../../schemas/cart.js";
 
@@ -19,22 +20,43 @@ export async function cartNode(
     action: "ajout",
   };
 
+  let modeleHint = entites?.modele ?? null;
+  let couleurHint = entites?.couleur ?? null;
+  const refHint = entites?.ref ?? null;
+  let oldRefToReplace: string | null = null;
+
+  // Fallback mémoire : ni ref ni modèle donnés dans le message, mais le
+  // panier (restauré par le checkpointer, Étape G) ne contient qu'une
+  // seule ligne -> on suppose que le client parle de cet article, sans
+  // lui redemander ce qu'il a déjà précisé plus tôt.
+  if (!refHint && !modeleHint && currentCart.lignes.length === 1) {
+    oldRefToReplace = currentCart.lignes[0].ref;
+    const { rows } = await pool.query<{ modele: string; couleur: string }>(
+      "SELECT modele, couleur FROM products WHERE ref = $1",
+      [oldRefToReplace]
+    );
+    if (rows[0]) {
+      modeleHint = rows[0].modele;
+      couleurHint = couleurHint ?? rows[0].couleur;
+    }
+  }
+
   // Vidage : cas simple, pas besoin de valider quoi que ce soit.
-  if (!entites?.ref && !entites?.modele) {
+  if (!refHint && !modeleHint) {
     return {
       toolResult: { agent: "cart", ok: false, missing: ["ref ou modele"] },
     };
   }
 
   // Retrouver la référence exacte du produit visé (par ref directe, ou recherche par modèle/couleur/taille).
-  let targetRef = entites.ref ?? null;
+  let targetRef = refHint;
   if (!targetRef) {
     const searchRaw = await searchProduct.invoke({
-      query: entites.modele ?? "",
-      couleur: entites.couleur ?? undefined,
+      query: modeleHint ?? "",
+      couleur: couleurHint ?? undefined,
     });
     const found = JSON.parse(searchRaw);
-    const match = entites.taille
+    const match = entites?.taille
       ? found.find((p: { taille: string }) => p.taille === entites.taille)
       : found[0];
     if (!match) {
@@ -54,13 +76,15 @@ export async function cartNode(
     };
   }
 
-  const quantite = entites.quantite ?? 1;
-  const lignesSansAncienne = currentCart.lignes.filter((l) => l.ref !== targetRef);
+  const quantite = entites?.quantite ?? 1;
+  const lignesSansAncienne = currentCart.lignes.filter(
+    (l) => l.ref !== targetRef && l.ref !== oldRefToReplace
+  );
   const nouvellesLignes = [...lignesSansAncienne, { ref: targetRef!, quantite }];
 
   const updatedCart: CartUpdate = {
     client_id: state.clientId,
-    ville: entites.ville ?? currentCart.ville,
+    ville: entites?.ville ?? currentCart.ville,
     lignes: nouvellesLignes,
     action: "modification",
   };
