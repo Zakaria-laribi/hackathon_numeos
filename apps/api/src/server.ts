@@ -16,11 +16,22 @@ fastify.register(async (instance) => {
     const config = { configurable: { thread_id: clientId } };
 
     socket.on("message", async (raw: Buffer) => {
-      const rawMessage = raw.toString();
+      let rawMessage: string;
+      try {
+        const parsed = JSON.parse(raw.toString());
+        rawMessage = typeof parsed.message === "string" ? parsed.message : raw.toString();
+      } catch {
+        rawMessage = raw.toString();
+      }
       try {
         const result = await kenzaGraph.invoke({ rawMessage, clientId }, config);
         socket.send(
-          JSON.stringify({ reply: result.reply, escalation: result.escalation ?? null })
+          JSON.stringify({
+            reply: result.reply,
+            intent: result.intent ?? null,
+            toolResult: result.toolResult ?? null,
+            escalation: result.escalation ?? null,
+          })
         );
       } catch (err) {
         instance.log.error(err);
@@ -30,11 +41,12 @@ fastify.register(async (instance) => {
   });
 });
 
-// --- REST : donnees pour le futur dashboard (EX-07) ---
+// --- REST : donnees pour le dashboard (EX-07) ---
 
 fastify.get("/api/conversations", async () => {
   const { rows } = await pool.query(
     `SELECT c.id, c.thread_id, c.customer_id, c.started_at,
+            (SELECT content FROM messages m WHERE m.conversation_id = c.id ORDER BY m.id DESC LIMIT 1) AS dernier_message,
             (SELECT count(*)::int FROM messages m WHERE m.conversation_id = c.id) AS nb_messages,
             EXISTS (SELECT 1 FROM escalations e WHERE e.conversation_id = c.id AND e.statut = 'open') AS escalade_ouverte
      FROM conversations c
@@ -55,7 +67,7 @@ fastify.get("/api/conversations/:id/messages", async (req) => {
 
 fastify.get("/api/escalations", async () => {
   const { rows } = await pool.query(
-    `SELECT e.id, e.conversation_id, e.reason, e.statut, e.created_at, c.thread_id
+    `SELECT e.id, e.conversation_id, e.reason, e.statut, e.created_at, c.thread_id, c.customer_id
      FROM escalations e
      JOIN conversations c ON c.id = e.conversation_id
      WHERE e.statut = 'open'
@@ -74,7 +86,9 @@ fastify.get("/api/orders", async () => {
 fastify.get("/api/stats", async () => {
   const [{ rows: convRows }, { rows: orderRows }] = await Promise.all([
     pool.query("SELECT count(*)::int AS n FROM conversations"),
-    pool.query("SELECT count(*)::int AS n, coalesce(sum(total_mad),0)::float AS total FROM orders WHERE id ~ '^CMD-[0-9]{13}$'"),
+    pool.query(
+      "SELECT count(*)::int AS n, coalesce(sum(total_mad),0)::float AS total FROM orders WHERE id ~ '^CMD-[0-9]{13}$'"
+    ),
   ]);
   const conversations = convRows[0].n;
   const commandes = orderRows[0].n;
