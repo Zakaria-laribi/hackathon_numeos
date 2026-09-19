@@ -59,6 +59,25 @@ export async function catalogNode(
     }
 
     case "creer_commande": {
+      // Priorité au panier déjà construit par cart_agent (références
+      // réelles déjà résolues) — une simple confirmation ("oui") n'a
+      // jamais ref/quantité/ville dans son propre message, le panier oui.
+        if (state.cart && state.cart.lignes.length > 0) {
+        const ville = state.cart.ville ?? entites.ville;
+        if (!ville) {
+          return { toolResult: { agent: "catalog", action: "create_order", ok: false, missing: ["ville"] } };
+        }
+        const raw = await createOrder.invoke({
+          client_id: state.clientId,
+          ville,
+          lignes: state.cart.lignes.map((l) => ({ ref: l.ref, quantite: l.quantite, remise_pct: 0 })),
+        });
+        // Panier vidé après commande réussie : sinon une confirmation
+        // suivante recréerait la même commande une deuxième fois.
+        return { toolResult: { agent: "catalog", action: "create_order", result: JSON.parse(raw) }, cart: null };
+      }
+
+      // Repli : tout donné dans un seul message, sans passer par le panier.
       const missing: string[] = [];
       if (!entites.ref) missing.push("ref");
       if (!entites.quantite) missing.push("quantite");
@@ -71,7 +90,7 @@ export async function catalogNode(
         ville: entites.ville!,
         lignes: [{ ref: entites.ref!, quantite: entites.quantite!, remise_pct: 0 }],
       });
-      return { toolResult: { agent: "catalog", action: "create_order", result: JSON.parse(raw) } };
+      return { toolResult: { agent: "catalog", action: "create_order", result: JSON.parse(raw) }, cart: null };
     }
 
     case "consulter_historique": {

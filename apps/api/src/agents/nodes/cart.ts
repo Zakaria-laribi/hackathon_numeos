@@ -80,7 +80,19 @@ export async function cartNode(
   const lignesSansAncienne = currentCart.lignes.filter(
     (l) => l.ref !== targetRef && l.ref !== oldRefToReplace
   );
+  
   const nouvellesLignes = [...lignesSansAncienne, { ref: targetRef!, quantite }];
+
+  // Persiste le panier dans la table carts (en plus du checkpointer) : c'est
+  // ce qui permet au worker de relance (Etape H) de detecter les paniers
+  // abandonnes sans devoir lire l'etat interne de LangGraph.
+  await pool.query(
+    `INSERT INTO carts (customer_id, statut, lignes, updated_at)
+     VALUES ($1, 'open', $2, now())
+     ON CONFLICT (customer_id) DO UPDATE SET
+       statut = 'open', lignes = EXCLUDED.lignes, updated_at = now(), relance_envoyee_at = NULL`,
+    [state.clientId, JSON.stringify(nouvellesLignes)]
+  );
 
   const updatedCart: CartUpdate = {
     client_id: state.clientId,

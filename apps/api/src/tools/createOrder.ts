@@ -55,7 +55,11 @@ export const createOrder = tool(
       );
     }
 
+    // La commande est finalisee : le panier ne doit plus etre relance.
+    await pool.query(`UPDATE carts SET statut = 'completed' WHERE customer_id = $1`, [client_id]);
+
     return JSON.stringify({ ok: true, order_id: orderId, total_mad: total, ville });
+    
   },
   {
     name: "create_order",

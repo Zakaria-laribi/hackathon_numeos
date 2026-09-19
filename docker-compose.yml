@@ -48,7 +48,7 @@ services:
     volumes:
       - .:/app
     # PLACEHOLDER en attendant l'Etape H (BullMQ)
-    command: sh -c "echo worker en attente Etape H && sleep infinity"
+    command: sh -c "cd apps/worker && npm install && npm run dev"
     env_file:
       - .env
     depends_on:
