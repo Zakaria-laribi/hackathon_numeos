@@ -1,24 +1,26 @@
-<div align="center">
-# 🛍️ Kenza
- 
-### L'agent commercial WhatsApp qui vend vraiment
- 
-*Un vendeur autonome qui conseille, encaisse et relance — en darija.*
- 
-<br>
-![Node](https://img.shields.io/badge/Node.js-20-339933?style=for-the-badge&logo=node.js&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
-![LangGraph](https://img.shields.io/badge/LangGraph-agents-1C3C3C?style=for-the-badge)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
-![Redis](https://img.shields.io/badge/Redis-7-DC382D?style=for-the-badge&logo=redis&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)
- 
-<br>
-**ESISA × Numeos Technology** · 17 — 19 septembre 2026 · `#NumeosHack26`
- 
-🎬 **[Démo vidéo (2 min)](<lien-a-inserer>)** · 👥 **Équipe :** `<noms>`
- 
-</div>
+<p align="center">
+  <h1 align="center">🛍️ Kenza</h1>
+  <h3 align="center">L'agent commercial WhatsApp qui vend vraiment</h3>
+  <p align="center">
+    <em>Un vendeur autonome qui conseille, encaisse et relance — en darija.</em>
+  </p>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Node.js-20-339933?style=for-the-badge&logo=node.js&logoColor=white" alt="Node" />
+  <img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/LangGraph-agents-1C3C3C?style=for-the-badge" alt="LangGraph" />
+  <img src="https://img.shields.io/badge/PostgreSQL-16-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
+  <img src="https://img.shields.io/badge/Redis-7-DC382D?style=for-the-badge&logo=redis&logoColor=white" alt="Redis" />
+  <img src="https://img.shields.io/badge/Docker-compose-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" />
+</p>
+
+<p align="center">
+  <strong>ESISA × Numeos Technology</strong> · 17 — 19 septembre 2026 · <code>#NumeosHack26</code>
+  <br><br>
+  🎬 <a href="lien-a-inserer"><strong>Démo vidéo (2 min)</strong></a> · 👥 <strong>Équipe :</strong> <code>&lt;noms&gt;</code>
+</p>
+
 ---
  
 ## 📑 Sommaire
