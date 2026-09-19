@@ -6,8 +6,8 @@ import { routeDecision } from "./nodes/route.js";
 import { catalogNode } from "./nodes/catalog.js";
 import { discountNode } from "./nodes/discount.js";
 import { policyNode } from "./nodes/policy.js";
-import { cartNode, escalateNode } from "./nodes/stubs.js";
-import { guardNode } from "./nodes/guard.js";
+import { cartNode } from "./nodes/cart.js";
+import { escalateNode } from "./nodes/stubs.js";import { guardNode } from "./nodes/guard.js";
 import { explainerNode } from "./nodes/explainer.js";
 import { persistNode } from "./nodes/persist.js";
 
