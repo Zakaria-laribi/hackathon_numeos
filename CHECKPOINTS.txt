@@ -1,0 +1,60 @@
+===============================================================================
+KENZA — CHECKPOINTS DU PROJET (résumé court)
+===============================================================================
+
+ÉTAPE A — Docker + Postgres + Redis
+  Infra de base : 5 services (postgres, redis, api, worker, web), docker-compose.yml.
+
+ÉTAPE B — Seed + indexation RAG
+  Catalogue, clients, commandes, grille livraison importés en Postgres.
+  51 chunks (politique commerciale, FAQ, conversations) indexés dans
+  rag_chunks avec embeddings (pgvector).
+
+ÉTAPE C — Outils (tools/) + moteurs (engines/)
+  5 tools LangChain : searchProduct, checkStock, computeDelivery,
+  createOrder, getCustomerHistory — tous appellent Postgres directement.
+  4 engines purs : pricing, stock, delivery, discount (plancher 10%,
+  configurable via DISCOUNT_FLOOR_PCT). Type Decision<T> commun.
+
+ÉTAPE D — Normalisation darija/arabizi
+  normalizeDarija() : unifie l'écriture avant toute analyse (EX-08).
+
+ÉTAPE E — Schémas Zod
+  IntentSchema (10 intentions dont question_politique), CartUpdateSchema,
+  OrderDraftSchema.
+
+ÉTAPE F — Graphe LangGraph (30% de la note) — TRÈS AVANCÉE
+  Graphe complet et fonctionnel :
+  START → ingest → extract → ROUTE →
+    [catalog | cart_agent | discount | policy | escalate] →
+    guard → explainer → persist → END
+
+  Commits :
+  - f148f29 : state.ts, nodes/ingest.ts, nodes/extract.ts, graph.ts (squelette)
+  - 99bec6c : nodes/route.ts, nodes/stubs.ts, routage conditionnel 5 branches
+  - f398297 : nodes/guard.ts, nodes/explainer.ts, nodes/persist.ts,
+              graphe complet bout en bout
+  - 2207a9a : catalog branché sur les 5 vrais outils SQL (EX-02)
+  - 2284105 : discount branché sur engines/discount.ts, plancher 10%
+              testé (scénario jury : remise refusée si > 10%)
+  - cfadd89 : policy branché sur le RAG réel (rag_chunks + searchPolicy),
+              escalade si similarité < 0.5
+  - 4cc54ab : cart_agent branché, gère ajout et changement de taille
+              (scénario jury "changement d'avis")
+
+  État actuel : 4 des 5 agents spécialisés sont réels (catalog, discount,
+  policy, cart_agent) + escalate (fonctionnel dès F.10, pas besoin d'outil).
+  AUCUN stub restant dans stubs.ts à part escalateNode.
+
+  Reste pour clore F : memory_load (placeholder avant le vrai
+  checkpointer de l'Étape G) ; durcissement optionnel de guard.
+
+  Scénarios du jury déjà démontrables en l'état :
+  - Rupture de stock / recherche produit → catalog (vrais prix/stock SQL)
+  - Demande de remise avec plancher infranchissable → discount
+  - Question de politique commerciale (retour, garantie) → policy (RAG)
+  - Changement d'avis (taille) → cart_agent
+  - Question hors sujet → escalate (sans improviser)
+
+
+===============================================================================
