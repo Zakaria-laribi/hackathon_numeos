@@ -7,9 +7,9 @@ import type { KenzaStateType } from "../state.js";
  */
 
 
-
 export async function escalateNode(state: KenzaStateType): Promise<Partial<KenzaStateType>> {
   return {
     escalation: { reason: `hors_domaine ou cas non couvert (intention=${state.intent?.intention})` },
+    toolResult: null,
   };
 }
