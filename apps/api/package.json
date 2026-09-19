@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "vitest run",
-    "dev": "echo \"api: en attente Etape I (serveur Fastify)\" && sleep infinity"
+    "dev": "tsx watch src/server.ts"
   },
   "keywords": [],
   "author": "",
